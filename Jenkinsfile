@@ -40,20 +40,29 @@ pipeline {
             }
         }
 
+//        stage('Container Build') {
+//            steps {
+//                script {
+//                    appImage = docker.build("${env.IMAGE_NAME}:${env.BUILD_NUMBER}")
+//                    docker.image("${env.IMAGE_NAME}:${env.BUILD_NUMBER}").tag("latest")
+//                }
+//            }
+//        }
+
         stage('Container Build') {
-            steps {
-                script {
-                    appImage = docker.build("${env.IMAGE_NAME}:${env.BUILD_NUMBER}")
-                    docker.image("${env.IMAGE_NAME}:${env.BUILD_NUMBER}").tag("latest")
-                }
-            }
-        }
+    	    steps {
+        	sh '''
+                   docker build -t kiruba11111985/finsecure-pay:${BUILD_NUMBER} .
+            	   docker tag kiruba11111985/finsecure-pay:${BUILD_NUMBER} kiruba11111985/finsecure-pay:latest
+                '''
+    	    }	 
+	}
 
         stage('Push to Docker Hub') {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', "${env.DOCKER_CREDENTIALS_ID}") {
-                        docker.image("${env.BUILD_NUMBER}").push()
+                        docker.image("${BUILD_NUMBER}").push()
                         docker.image("latest").push()
                     }
                 }
