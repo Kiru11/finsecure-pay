@@ -55,9 +55,9 @@ class TransactionControllerTest {
                 .andExpect(jsonPath("$.status").value("FAILED"));
     }
 
-    @Test
-    void intentionalFailureTest() {
+//    @Test
+//    void intentionalFailureTest() {
         // Forcing a failure to demonstrate pipeline gatekeeping
-        org.junit.jupiter.api.Assertions.assertEquals(true, false, "Intentional test failure for CI/CD demonstration");
-    } 
+//        org.junit.jupiter.api.Assertions.assertEquals(true, false, "Intentional test failure for CI/CD demonstration");
+//    } 
 }
