@@ -58,17 +58,33 @@ pipeline {
     	    }	 
 	}
 
-        stage('Push to Docker Hub') {
-            steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', "${env.DOCKER_CREDENTIALS_ID}") {
-                        //docker.image("${BUILD_NUMBER}").push()
-                        docker.image("${env.IMAGE_NAME}:${env.BUILD_NUMBER}").push()
-                        docker.image("${env.IMAGE_NAME}:latest").push()
-                    }
-                }
-            }
-        }
+//        stage('Push to Docker Hub') {
+//            steps {
+//                script {
+//                    docker.withRegistry('https://index.docker.io/v1/', "${env.DOCKER_CREDENTIALS_ID}") {
+//                        //docker.image("${BUILD_NUMBER}").push()
+//                        docker.image("${env.IMAGE_NAME}:${env.BUILD_NUMBER}").push()
+//                        docker.image("${env.IMAGE_NAME}:latest").push()
+//                    }
+//                }
+//            }
+//        }
+
+	stage('Security Check (Trivy)') {
+    	    steps {
+        	sh "trivy image --severity MEDIUM,HIGH,CRITICAL --exit-code 1 ${env.IMAGE_NAME}:${env.BUILD_NUMBER}"
+    	    }
+	}
+
+	stage('Push to Docker Hub') {
+    	    steps {
+        	withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKER_PASSWORD')]) {
+            	sh "echo \$DOCKER_PASSWORD | docker login -u 'kiruba11111985' --password-stdin"
+            	sh "docker push ${env.IMAGE_NAME}:${env.BUILD_NUMBER}"
+            	sh "docker push ${env.IMAGE_NAME}:latest"
+        	}	
+    	    }
+	}	
 
         stage('Deploy to Kubernetes') {
             steps {
