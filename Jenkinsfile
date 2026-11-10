@@ -62,8 +62,9 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', "${env.DOCKER_CREDENTIALS_ID}") {
-                        docker.image("${BUILD_NUMBER}").push()
-                        docker.image("latest").push()
+                        //docker.image("${BUILD_NUMBER}").push()
+                        docker.image("${env.IMAGE_NAME}:${env.BUILD_NUMBER}").push()
+                        docker.image("${env.IMAGE_NAME}:latest").push()
                     }
                 }
             }
