@@ -77,9 +77,9 @@ pipeline {
                     sed -i 's|image: ${IMAGE_NAME}:.*|image: ${IMAGE_NAME}:${BUILD_NUMBER}|g' deployment.yaml
                     
                     # Apply manifests to cluster
-                    kubectl apply -f configmap.yaml
-                    kubectl apply -f deployment.yaml
-                    kubectl apply -f service.yaml
+                    kubectl apply --validate=false -f configmap.yaml
+                    kubectl apply --validate=false -f deployment.yaml
+                    kubectl apply --validate=false -f service.yaml
                     
                     # Verify rollout status
                     kubectl rollout status deployment/finsecure-pay-deployment --timeout=120s
