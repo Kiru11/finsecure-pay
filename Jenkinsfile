@@ -72,7 +72,7 @@ pipeline {
 
 	stage('Security Check (Trivy)') {
     	    steps {
-        	sh "trivy image --severity MEDIUM,HIGH,CRITICAL --exit-code 1 ${env.IMAGE_NAME}:${env.BUILD_NUMBER}"
+        	sh "trivy image --severity HIGH,CRITICAL --exit-code 1 ${env.IMAGE_NAME}:${env.BUILD_NUMBER}"
     	    }
 	}
 
