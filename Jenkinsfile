@@ -73,6 +73,9 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh """
+	            #Force kubectl to use the shared kubeconfig file
+		    export KUBECONFIG=/var/lib/jenkins/config
+
                     # Update deployment image tag dynamically
                     sed -i 's|image: ${IMAGE_NAME}:.*|image: ${IMAGE_NAME}:${BUILD_NUMBER}|g' deployment.yaml
                     
